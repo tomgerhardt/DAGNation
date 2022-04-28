@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEthers } from "@usedapp/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { emphasize, fade, darken, lighten } from '@material-ui/core/styles/colorManipulator';
 
@@ -47,22 +48,31 @@ const useStyles = makeStyles((theme) => ({
 ));
 
 export default function Component(props) {
-  const classes = useStyles();
-
-  return (
-<AppBar position="static" >
-  <Container maxWidth="md">
-    <Toolbar disableGutters='true' className={classes.toolbar}>
-      <Link href="#" variant="h5" color="inherit" underline="none" className={classes.linkBrand}>
-        <img src="https://static.shuffle.dev/uploads/files/7a/7a59a62bfc483385e4c70be7be0fe12f4fc1c2ac/NN-Logo-Text.svg" alt="" height="40" />
-      </Link>
-      <Link href="#" variant="h5" color="inherit" underline="none" className={classes.linkBrandSmall}>
-        <img src="https://static.shuffle.dev/uploads/files/7a/7a59a62bfc483385e4c70be7be0fe12f4fc1c2ac/NN-Logo-Text.svg" alt="" height="40" />
-      </Link>
-      <Button href="/" size="small" variant="outlined">Whitepaper</Button>
-      <Button href="/" size="small" variant="contained">Connect</Button> 
-    </Toolbar>
-  </Container>
-</AppBar>
+    const classes = useStyles();
+    const { account, activateBrowserWallet, deactivate, chainId } = useEthers()
+    const isConnected = account !== undefined
+        
+    return (
+    <AppBar position="static" >
+      <Container maxWidth="md">
+        <Toolbar disableGutters='true' className={classes.toolbar}>
+          <Link href="#" variant="h5" color="inherit" underline="none" className={classes.linkBrand}>
+            <img src="https://static.shuffle.dev/uploads/files/7a/7a59a62bfc483385e4c70be7be0fe12f4fc1c2ac/NN-Logo-Text.svg" alt="" height="40" />
+          </Link>
+          <Link href="#" variant="h5" color="inherit" underline="none" className={classes.linkBrandSmall}>
+            <img src="https://static.shuffle.dev/uploads/files/7a/7a59a62bfc483385e4c70be7be0fe12f4fc1c2ac/NN-Logo-Text.svg" alt="" height="40" />
+          </Link>
+          <Button href="/" size="small" variant="outlined">Whitepaper</Button>
+              {account && <label className="h6 heading6">{account.slice(0, 4)}...{account.slice(-4)}</label>}
+              {
+                  isConnected ? (
+                      <Button href="/" size="small" variant="contained" onClick={deactivate}>Disconnect</Button>
+                  ) : (
+                       <Button href="/" size="small" variant="contained" onClick={() => activateBrowserWallet()}>Connect</Button>
+                  )
+              }
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
