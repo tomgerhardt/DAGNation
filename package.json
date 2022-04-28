@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "homepage": "http://dag.node-nation.com",
+  "homepage": "https://dag.node-nation.com",
   "version": "1.0.0",
   "private": true,
   "scripts": {

@@ -19,7 +19,7 @@ import { useState } from "react"
 
 
 //setup smart contract interface
-const DAGNationAddress = '0x9CB20fc884d58d8602f99209f451CefED3348cD2'
+const DAGNationAddress = '0x3efbCBfCE9E96b83C1c7f496e55D3792db5B0123'
 const DAGNInterface = new utils.Interface(DAGNationABI)
 const contract = new Contract(DAGNationAddress, DAGNInterface)
 
