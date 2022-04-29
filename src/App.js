@@ -1,27 +1,34 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom';
 
+import HorizontalNavsCustom1 from './components/HeaderComponent';
+import CallToActionCustom2 from './components/MainComponent';
 
-import IndexPage from './pages/Index.js';
-import MembershipsPage from './pages/Memberships.js';
+import { ChainId, DAppProvider, BSCTestnet, Config, } from "@usedapp/core";
+import { useEthers } from "@usedapp/core";
+import { providers } from "ethers"
+
+const bscProvider = new providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org")
+bscProvider.pollingInterval = 10_000;
+
+const config: Config = {
+  readOnlyChainId: BSCTestnet.chainId,
+  readOnlyUrls: {
+    [BSCTestnet.chainId]: bscProvider,
+  },
+  pollingInterval: 10000,
+  notifications: {
+    expirationPeriod: 1000,
+    checkInterval: 1000
+  }
+}
 
 
 
 export default function App() {
   return (
-        <Router>
-            <Switch>
-              <Route exact path="/">
-                <IndexPage />
-              </Route>
-              <Route exact path="/memberships">
-                <MembershipsPage />
-              </Route>
-            </Switch>
-        </Router>
+          <DAppProvider config={config}>
+            <HorizontalNavsCustom1 />
+            <CallToActionCustom2 />
+          </DAppProvider>
   );
 }
