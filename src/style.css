@@ -1,0 +1,12 @@
+
+
+#root {
+  background-image:
+    url( "universe.jpg");
+    background-size: contain;
+}
+
+header{
+    background-color:rgb(0 0 0 / 0%) !important;
+    
+}

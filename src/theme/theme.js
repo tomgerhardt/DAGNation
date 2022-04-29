@@ -1,6 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+    
     "palette": {
         "type": "dark",
         "background": {
@@ -21,13 +22,14 @@ const theme = createMuiTheme({
             "disabledBackground": "rgba(255, 255, 255, 0.12)"
         },
         "primary": {
-            "main": "#000000",
+            "main": "#FFFFFF",
             "light": "#56525F",
             "dark": "#171619"
         },
         "secondary": {
-            "main": "#FFFFFF"
-        }
+            "main": "#dd2e46",
+        },
+
     },
     "typography": {
         "fontFamily": "\"Montserrat\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",

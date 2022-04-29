@@ -28,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
   },
   panel:{
-    backgroundColor:  'black',
-    opacity:'70%',
+    backgroundColor: 'rgb(0,0,0,70%)',
     borderRadius:'16px'
   },
     
@@ -56,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   nodeMeterProg:{
     position:'absolute',
-    backgroundColor:'red',
+    backgroundColor:'#1bb3be',
     
     height:'56px',
     top:'2px',
@@ -80,17 +79,20 @@ const useStyles = makeStyles((theme) => ({
         left:'0px'
   },
     doublePanelCont:{
-      height: '300px',
+      height: '340px',
+      paddingTop: '20px'
+    },
+    doublePanel:{
+        width:'50%',
+        display:'inline-block',
+        height:'100%'
     },
     panelDetail:{
-      backgroundColor:  'black',
-      opacity:'70%',
+      backgroundColor:  'rgb(0,0,0,70%)',
       borderRadius:'16px',
       height: '100%',
-      width: '47%',
+      width: '100%',
       display:'inline-block',
-        marginTop:'20px',
-          marginRight:'20px'
     },
     lineBreak:{
       height:'2px',
@@ -106,8 +108,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop:'40px',
     },
       panel:{
-      backgroundColor:  'black',
-      opacity:'70%',
+      backgroundColor:  'rgb(0,0,0,70%)',
       borderRadius:'16px',
       height: '100%',
      
@@ -155,9 +156,9 @@ const RewardsComponent = () => {
        }
        return value?.[0].toString()
     }
-    const rewardsAmount = getRewardsAmount()
+    const rewardsAmount = Math.trunc( getRewardsAmount()  / 1000000000000000000 )
                            
-    //grab wallet rewards amount
+    //grab wallet staked amount
     function getStakedAmount() {
       const { value, error } =
           useCall(
@@ -174,23 +175,65 @@ const RewardsComponent = () => {
       return value?.[0].toString()
     }
     const stakedAmount = getStakedAmount()
+    const stakedPercentage = 0
+                                     
+                                     
+    //grab wallet waiting amount
+    function getWaitingAmount() {
+    const { value, error } =
+       useCall(
+           {
+               contract: contract, // instance of called contract
+               method: 'getHolderWaitingAmount', // Method to be called
+               args: [account], // Method arguments - address to be checked
+           }
+       ) ?? {};
+    if (error) {
+       console.error(error.message)
+       return undefined
+    }
+    return value?.[0].toString()
+    }
+    const waitingAmount = getWaitingAmount()
     
     return (
         <Container maxWidth="md" mt={4} className={classes.doublePanelCont}>
-        <Box className={classes.panelDetail} p={6}>
-          <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">My Rewards</Typography>
-          <Box className={classes.lineBreak}></Box>
-          <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{rewardsAmount}</Typography>
-          <Typography className={classes.nodeMeterTitleCont} variant="body" color="secondary">$BUSD</Typography>
-              <Button className={classes.claimButton} variant="contained" size="large" onClick={() => writeClaimBUSD()}>Claim</Button>
-            <p>Status: {status}</p>
-        </Box>
-        <Box className={classes.panelDetail} p={6}>
-          <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">My Stake</Typography>
-          <Box className={classes.lineBreak}></Box>
-          <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{stakedAmount}</Typography>
-          <Typography className={classes.nodeMeterTitleCont} variant="body" color="secondary">0% of Total</Typography>
-        </Box>
+            <Box className={classes.doublePanel} style={{paddingRight:'10px'}}>
+                <Box className={classes.panelDetail} p={6}>
+                <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">My $DAG</Typography>
+                <Box className={classes.lineBreak}></Box>
+                <Box mt={2}>
+                    <Box style={{display:'inline-block', marginRight:"5px"}}><Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{waitingAmount}</Typography></Box>
+                    <Box style={{display:'inline-block'}}>
+                        <Box><Typography className={classes.nodeMeterTitleCont} variant="body" color="primary">DAG Queued</Typography></Box>
+                        <Box><Typography className={classes.nodeMeterTitleCont} variant="body" color="primary">for next epoch</Typography></Box>
+                    </Box>
+                </Box>
+                <Box mt={1}>
+                    <Box style={{display:'inline-block', marginRight:"5px"}}><Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{stakedAmount}</Typography></Box>
+                    <Box style={{display:'inline-block'}}>
+                        <Box><Typography className={classes.nodeMeterTitleCont} variant="body" color="primary">DAG Staked</Typography></Box>
+                        <Box><Typography className={classes.nodeMeterTitleCont} variant="body" color="primary">on node</Typography></Box>
+                    </Box>
+                </Box>
+                </Box>
+            </Box>
+            <Box className={classes.doublePanel} style={{paddingLeft:'10px'}}>
+                <Box className={classes.panelDetail} p={6}>
+                    <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">My Rewards</Typography>
+                    <Box className={classes.lineBreak}></Box>
+                    <Box mt={2}>
+                        <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{rewardsAmount}</Typography>
+                      <Typography className={classes.nodeMeterTitleCont} variant="body" color="primary">$BUSD</Typography>
+                    </Box>
+                    <Box mt={1}>
+                        <Box style={{display:'inline-block'}}><Button className={classes.claimButton} variant="contained" size="large" onClick={() => writeClaimBUSD()}>Claim</Button></Box>
+                        
+                    </Box>
+                </Box>
+            </Box>
+            
+        
         </Container>
     )
 }
@@ -219,7 +262,7 @@ const AdminComponent = () => {
            ) ?? {};
        if (error) {
            console.error(error.message)
-           return undefined
+           return false
        }
        return value?.[0].toString()
     }
@@ -282,27 +325,26 @@ export default function Component(props) {
     
         const meterPerc = (value / 250000)
         Object.assign(meterWidth, {wid:meterPerc*50+'%'} )
-        return value?.[0].toString()
+       return value?.[0].toString()
     }
     const stakedDAGamount = getDAGamount()
     const meterBar = React.createRef()
-                           
-    
+
                            
                            
   return (
 <section>
   <Container maxWidth="md" >
-    <Box py={8} textAlign="left">
+          <Box px={6} pt={8} pb={6} textAlign="left">
       <Typography className={classes.heroTitle} variant="h3" component="h2" gutterBottom={true}>Accessible softnode ownership</Typography>
-      <Typography variant="body" color="secondary">DAGNation provides the opportunity to benefit from the rewrds of node ownership on the Constellation Network. Nodes require 250k $DAG to be staked in them to earn rewards. With DADNation, you can stake as little at .25BNB to participate.</Typography>
+      <Typography variant="body" color="primary">DAGNation provides the opportunity to benefit from the rewrds of node ownership on the Constellation Network. Nodes require 250k $DAG to be staked in them to earn rewards. With DAGNation, you can stake as little at .25 $BNB to participate.</Typography>
     </Box>
   </Container>
   <Container maxWidth="md" mt={4}>
     <Box className={classes.panel} p={6}>
 
       <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">{stakedDAGamount}</Typography>
-      <Typography className={classes.nodeMeterTitleCont} variant="body" color="secondary">$DAG Staked</Typography>
+      <Typography className={classes.nodeMeterTitleCont} variant="body" color="primary"> $DAG Staked</Typography>
       <box component="div" className={classes.nodeMeterCont}>
         <box className={classes.nodeMeterBK}></box>
           <box className={classes.nodeMeterProg} style={{width: meterWidth.wid}}></box>
@@ -314,18 +356,19 @@ export default function Component(props) {
         </box>
       </box>
 
-      <Typography variant="h3" component="h2">+ Add to Node</Typography>
-      <TextField id="outlined-basic" 
+          <Box mt={4}><Typography variant="h3" component="h2">Buy $DAG and Stake</Typography></Box>
+          <Box my={2}>
+          <TextField style={{marginRight:"20px", top:"2px"}} size="small" id="outlined-basic"
         InputProps={{
           startAdornment: <InputAdornment position="start">$BNB</InputAdornment>,
         }}
           placeholder=".25 Min" variant="outlined" onChange={event => setInvestBNBamount(event.target.value)} />
           
           
-          <Button variant="contained" size="large" onClick={() => writeInvestBNB()}>Add</Button>
-          <p>Status: {status}</p>
+          <Button variant="contained" size="large" onClick={() => writeInvestBNB()}>Buy and Stake</Button>
           
-      <Typography display='block' variant="body" color="secondary">Staked $BNB is swapped for $DAG and locked into a Constellation Network Softnode. Staked value will not be availible for withdrawl until Constellation Network Mainnet launches in Q3 2022, and at the end of the Softnode Period. If at least 250,000 $DAG is staked before the locking period, produced rewards will be split amoung stakers per their percentage of the node.</Typography>
+          </Box>
+      <Typography display='block' variant="body" color="primary">Your $BNB is swapped for $DAG and put into a queue to wait until the next Softnode epoch starts, where it will be staked in a Constellation Network Softnode. If at least 250,000 $DAG is staked before the epoch starts, produced rewards will be split among stakers per their percentage of the node.</Typography>
     </Box>
   </Container>
     
