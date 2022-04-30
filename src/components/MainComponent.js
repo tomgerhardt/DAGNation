@@ -18,8 +18,9 @@ import { Contract } from '@ethersproject/contracts'
 import { useState } from "react"
 
 
+
 //setup smart contract interface
-const DAGNationAddress = '0x3efbCBfCE9E96b83C1c7f496e55D3792db5B0123'
+const DAGNationAddress = '0x6FB1bE7acf35b116bB97144c4eAb01EC0F80839A'
 const DAGNInterface = new utils.Interface(DAGNationABI)
 const contract = new Contract(DAGNationAddress, DAGNInterface)
 
@@ -270,14 +271,14 @@ const AdminComponent = () => {
 
     return (
             <div>
-                {isAdmin ?
+                {isAdmin===true ?
                 <Container maxWidth="md" mt={4} className={classes.panelCont}>
                 <Box className={classes.panel} p={6}>
                   <Typography className={classes.nodeMeterTitleCont} variant="h3" component="h2">Admin</Typography>
                   <Box className={classes.lineBreak}></Box>
                 </Box>
                 </Container>
-                : <div></div> }
+        : <div style={{minHeight:"200px"}}></div> }
             </div>
     )
 }
@@ -378,3 +379,4 @@ export default function Component(props) {
 </section>
   );
 }
+                          

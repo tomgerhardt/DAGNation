@@ -1,7 +1,9 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
-    
+    "status": {
+        "danger": '#e53e3e',
+      },
     "palette": {
         "type": "dark",
         "background": {
@@ -28,6 +30,7 @@ const theme = createMuiTheme({
         },
         "secondary": {
             "main": "#dd2e46",
+            "light": "#ff0000",
         },
 
     },
