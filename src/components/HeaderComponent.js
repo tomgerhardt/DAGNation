@@ -69,7 +69,7 @@ export default function Component(props) {
               isConnected ? (
                   <Button size="small" color='secondary' variant="contained" onClick={deactivate}>Disconnect<Container style={{color:'white',position:'absolute',top:'32px'}}>{account.slice(0, 4)}...{account.slice(-4)}</Container></Button>
               ) : (
-                   <Button href="/" size="small" color='secondary' variant="contained" onClick={() => activateBrowserWallet()}>Connect</Button>
+                   <Button size="small" color='secondary' variant="contained" onClick={() => activateBrowserWallet()}>Connect</Button>
               )
           }
             
